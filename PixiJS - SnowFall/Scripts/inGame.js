@@ -36,6 +36,7 @@ class InGame
 
     update(delta)
     {
+        //move player x value
         this._player.update(delta);
 
         if(this._player.checkOutOfBounds())
@@ -43,6 +44,7 @@ class InGame
             this.OnCollisionHit();
         }
 
+        //updates trees y value and checks collision
         for (var i = 0; i < this._allTrees.length; i++)
         {
             this._allTrees[i].update();
@@ -57,6 +59,7 @@ class InGame
         this._scoreText.text = this._player.score;
     }
 
+    //changes state to gameover and resets  
     OnCollisionHit()
     {
         //change state
@@ -64,13 +67,15 @@ class InGame
         gameOverScene.visible = true;
         state = end;
 
+        //update scores
+        gameOverObj.updateScores(this._player.score, this._player.highScore);
+
         //reset player and trees for next play thorugh
         this._player.resetPlayer();
         for(var i = 0; i < this._allTrees.length; i++)
             this._allTrees[i].calcPosition();
     }
 
-    //The `hitTestRectangle` function
     collisionDetection(r1, r2) {
     //Define the variables we'll need to calculate
     let hit, combinedHalfWidths, combinedHalfHeights, vx, vy;

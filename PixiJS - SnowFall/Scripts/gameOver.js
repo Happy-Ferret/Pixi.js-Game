@@ -2,6 +2,7 @@ class GameOver
 {
     constructor()
     {
+        //text styles
         this._scoreTextstyle = new PIXI.TextStyle({
             fontFamily: 'Century Gothic',
             fontSize: 35,
@@ -63,6 +64,7 @@ class GameOver
         gameOverScene.addChild(this._highScoreAmount);
     }
 
+    //return text object
     CreateText(text, style, posX, posY)
     {
         let newText = new PIXI.Text(text, style);
@@ -71,6 +73,7 @@ class GameOver
         return newText;
     }
 
+    //sets score text
     updateScores(score, highScore)
     {
         //update the score and highscore text

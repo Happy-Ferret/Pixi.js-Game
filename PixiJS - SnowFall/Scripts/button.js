@@ -4,25 +4,31 @@ class ButtonElement extends PIXI.Sprite
     {
         super(PIXI.Texture.fromImage(image));
 
+        //init standard variabbles
         this.position.set(posX,posY);
         this.pivot.set(0.5);
         this.anchor.set(0.5);
         this.scale.set(scale);
         this.originalSize = scale;
 
-        this.on("pointerdown", () => {
+        //create mouse/finger events
+        this.on("pointerdown", () => 
+        {
             this.onDown();
         }, this);
 
-        this.on("pointerup", () => {
+        this.on("pointerup", () => 
+        {
             this.onUp();
         }, this);
 
-        this.on("pointerover", () => {
+        this.on("pointerover", () => 
+        {
             this.onHover();
         }, this);
 
-        this.on("pointerout", () => {
+        this.on("pointerout", () => 
+        {
             this.onOut();
         }, this);
 
@@ -38,7 +44,8 @@ class ButtonElement extends PIXI.Sprite
         this.tint = 0xffffff;
     }
 
-    onUp() {
+    onUp() 
+    {
         if(typeof(this._cb) === 'function') 
         {
             this._cb();

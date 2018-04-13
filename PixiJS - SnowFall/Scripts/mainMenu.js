@@ -18,7 +18,7 @@ class MainMenu
             menuScene.visible = false;
         });
 
-        this._characterSelectButton = new ButtonElement(menuScene, "images/playButton2.png", WIDTH / 2, HEIGHT - HEIGHT / 3.5, .6);
+        this._characterSelectButton = new ButtonElement(menuScene, "images/characterSelectButton.png", WIDTH / 2, HEIGHT - HEIGHT / 3.5, .6);
         this._characterSelectButton.isClickable(true);
         this._characterSelectButton.clicked(function ()
         {

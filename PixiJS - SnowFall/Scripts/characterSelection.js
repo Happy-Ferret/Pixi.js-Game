@@ -16,18 +16,20 @@ class CharacterSelection
             align: 'center'
         });
 
+        //title text
         this._characterText = new PIXI.Text('Select\nCharacter', style);
         this._characterText.position.set( WIDTH / 2, HEIGHT / 8);
         this._characterText.anchor.set(0.5);
         characterSelectScene.addChild(this._characterText);
 
+        //visible player sprite
         this.characterSprite = new PIXI.Sprite(PIXI.Texture.fromImage(this._playerTextures[this._currentlySelected]));
-        this.characterSprite.scale.set(5);
-        this.characterSprite.position.set(WIDTH / 2 + 30, HEIGHT / 2);
+        this.characterSprite.position.set(WIDTH / 2 + 10, HEIGHT / 2);
         this.characterSprite.anchor.set(0.5);
         characterSelectScene.addChild(this.characterSprite);
 
-        this._confirmSelection = new ButtonElement(characterSelectScene, "images/playButton2.png", WIDTH / 2, HEIGHT - HEIGHT / 8, 1);
+        //returns to main menu
+        this._confirmSelection = new ButtonElement(characterSelectScene, "images/confirmButton.png", WIDTH / 2, HEIGHT - HEIGHT / 8, 1);
         this._confirmSelection.isClickable(true);
         this._confirmSelection.clicked(function()
         {
@@ -37,7 +39,8 @@ class CharacterSelection
             menuScene.visible = true;
         });
 
-        this._nextCharacterLeft = new ButtonElement(characterSelectScene, "images/menuButton.png", WIDTH / 4, HEIGHT - HEIGHT / 8, .7);
+        //updates currently selected
+        this._nextCharacterLeft = new ButtonElement(characterSelectScene, "images/leftSelectButton.png", WIDTH / 6, HEIGHT - HEIGHT / 8, .6);
         this._nextCharacterLeft.isClickable(true);
         this._nextCharacterLeft.on("pointerup", () => 
         {
@@ -47,13 +50,18 @@ class CharacterSelection
             this._currentlySelected--;
             if(this._currentlySelected < 0)
             {
-                this._currentlySelected = 0;
+                this._currentlySelected = this._playerTextures.length - 1;
             }
                             
             this.characterSprite.texture = PIXI.Texture.fromImage(this._playerTextures[this._currentlySelected]);
         });
+        this._nextCharacterLeft.on("pointerdown", ()=>
+        {
+            this._nextCharacterLeft.y += 2;
+        });
 
-        this._nextCharacterRight = new ButtonElement(characterSelectScene, "images/menuButton.png", WIDTH - WIDTH / 4, HEIGHT - HEIGHT / 8, .7);
+        //updates currentlyselected
+        this._nextCharacterRight = new ButtonElement(characterSelectScene, "images/rightSelectButton.png", WIDTH - WIDTH / 6, HEIGHT - HEIGHT / 8, .6);
         this._nextCharacterRight.isClickable(true);
         this._nextCharacterRight.on("pointerup", () => 
         {
@@ -61,12 +69,16 @@ class CharacterSelection
 
             //update characterSprite
             this._currentlySelected++;
-            if(this._currentlySelected < 0)
+            if(this._currentlySelected > this._playerTextures.length - 1)
             {
                 this._currentlySelected = 0;
             }
                             
             this.characterSprite.texture = PIXI.Texture.fromImage(this._playerTextures[this._currentlySelected]);
+        });
+        this._nextCharacterRight.on("pointerdown", ()=>
+        {
+            this._nextCharacterRight.y += 2;
         });
     }
 

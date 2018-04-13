@@ -18,62 +18,68 @@ var app = new PIXI.Application(WIDTH, HEIGHT,
 document.getElementById('Canvas').appendChild(app.view);
 
 loader
-.add(["images/player.png", "images/player2.png"])
+.add("images/logo.png")
 .load(setup);
 
 var state, menuScene, gameScene, gameOverScene, characterSelectScene;
-let mainMenuClass, characterSelectionClass, inGameClass, gameOverClass; 
-//Define any variables that are used in more than one function
-let player, scoreTextAmount, endScoreTextAmount;
-let trees = [];
-let playerTextureIndex = 0;
-let characterSelectionSprite;
+let mainMenuObj, characterSelectionObj, inGameObj, gameOverObj; 
 
 function setup() 
 {
+    //menu scene - setup
+
     //create the scene containers
     menuScene = new Container();
     app.stage.addChild(menuScene);
-    //menu scene
-    mainMenuClass = new MainMenu();
-    mainMenuClass.setup();
-    //end menu scene
 
+    //create class object
+    mainMenuObj = new MainMenu();
+    mainMenuObj.setup();
 
-    //characterSelectScene
+    //end menu scene - setup
+
+    //characterSelection scene - setup
     characterSelectScene = new Container();
     app.stage.addChild(characterSelectScene);
     characterSelectScene.visible = false;
 
-    let textures = ["images/player.png", "images/player2.png"];
-    characterSelectionClass = new CharacterSelection(textures);
-    characterSelectionClass.setup();
+    //textures used for player
+    let textures = ["images/player1Large.png", "images/player2Large.png"];
+    characterSelectionObj = new CharacterSelection(textures);
+    characterSelectionObj.setup();
 
-    //game scene
+    //end characterSelection - setup
+
+    //game scene - setup
+
     //create gameScene container
     gameScene = new Container();
     app.stage.addChild(gameScene);
     gameScene.visible = false;
     //init game variables
-    inGameClass = new InGame();
-    inGameClass.setup();
+    inGameObj = new InGame();
+    inGameObj.setup();
 
     //setup keyboard controls
     let spacebar = keyboard(32);
     spacebar.release =  function()
     {
-        inGameClass._player.changeDirection();
+        inGameObj._player.changeDirection();
     }
-    //end game scene
 
-    //gameover scene
+    //end game scene - setup
+
+
+    //gameover scene - setup
     gameOverScene = new Container();
     app.stage.addChild(gameOverScene);
     gameOverScene.visible = false;
     //init gameover variables;
-    gameOverClass = new GameOver();
-    gameOverClass.setup();
-    //end gameover scene
+    gameOverObj = new GameOver();
+    gameOverObj.setup();
+
+    //end gameover scene - setup
+
 
     //Set the game state
     state = menu;
@@ -90,7 +96,7 @@ function gameLoop(delta)
 
 function play(delta)
 {
-    inGameClass.update(delta);
+    inGameObj.update(delta);
 }
 
 function menu(delta)
@@ -101,16 +107,16 @@ function menu(delta)
 function end(delta)
 {
     //gameover logic
-    gameOverClass.updateText(inGameClass._player.score, inGameClass._player.score);
 }
 
 function characterSelection()
 {
     //character selection logic
+    inGameObj._player.updateTexture(characterSelectionObj._currentlySelected);
 }
 
 
-//The `keyboard` helper function
+//keyboard controller
 function keyboard(keyCode) 
 {
     var key = {};
@@ -118,18 +124,19 @@ function keyboard(keyCode)
     key.isDown = false;
     key.isUp = true;
     key.release = undefined;
-    //The `downHandler`
+
+    //downhandler
     key.downHandler = function(event) 
     {
         if (event.keyCode === key.code) 
         {
-            //if (key.isUp && key.press) key.press();
             key.isDown = true;
             key.isUp = false;
         }
         event.preventDefault();
     };
-    //The `upHandler`
+    
+    //uphandler
     key.upHandler = function(event) 
     {
         if (event.keyCode === key.code) 
@@ -140,7 +147,8 @@ function keyboard(keyCode)
         }
         event.preventDefault();
     };
-    //Attach event listeners
+
+    // event listeners
     window.addEventListener("keydown", key.downHandler.bind(key), false);
     window.addEventListener("keyup", key.upHandler.bind(key), false);
     return key;

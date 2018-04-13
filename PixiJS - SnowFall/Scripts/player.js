@@ -1,7 +1,7 @@
 //needs collision detection
 class Player extends PIXI.Sprite
 {
-    constructor(parent=null, image, speed, posX, posY, textures)
+    constructor(parent=null, image, speed, posX, posY)
     {
         super(PIXI.Texture.fromImage(image));
 
@@ -24,7 +24,7 @@ class Player extends PIXI.Sprite
 
     updateTexture(index)
     {
-        this.setTexture(PIXI.Texture.fromImage(this.textures[index]));
+        this.texture = PIXI.Texture.fromImage(this.textures[index]);
     }
 
     update(delta)
@@ -36,14 +36,6 @@ class Player extends PIXI.Sprite
             this.timer = 100;
             this.updateScore();
         }
-    }
-
-    togglePause(isPaused)
-    {
-        if(isPaused)
-            this.tempspeed = this.vx;
-        else
-            this.vx = this.tempspeed;
     }
 
     changeDirection()
