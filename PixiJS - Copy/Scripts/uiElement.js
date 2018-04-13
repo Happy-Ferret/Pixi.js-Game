@@ -32,27 +32,27 @@ class ButtonElement extends PIXI.Sprite
         }
     }
 
-    onDown() {
-        console.log('Clicked');
+    onDown()
+     {
         this.y += 2;
         this.tint = 0xffffff;
     }
 
     onUp() {
-        console.log('onup');
-        if(typeof(this._cb) === 'function') {
+        if(typeof(this._cb) === 'function') 
+        {
             this._cb();
         }
         this.y -= 2;
     }
 
-    onHover() {
-        console.log('On Hover');
+    onHover() 
+    {
         this.scale.set(this.originalSize + .05);
     }
 
-    onOut() {
-        console.log('On Out');
+    onOut() 
+    {
         this.scale.set(this.originalSize);
     }
 

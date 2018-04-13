@@ -21,8 +21,10 @@ loader
 .add(["images/player.png", "images/player2.png"])
 .load(setup);
 
+var state, menuScene, gameScene, gameOverScene, characterSelectScene;
+let mainMenuClass, characterSelectionClass, inGameClass; 
 //Define any variables that are used in more than one function
-let state, menuScene, gameScene, gameOverScene, characterSelectScene, player, scoreTextAmount, endScoreTextAmount;
+let player, scoreTextAmount, endScoreTextAmount;
 let trees = [];
 let playerTextureIndex = 0;
 let characterSelectionSprite;
@@ -65,31 +67,8 @@ function setup()
     app.stage.addChild(menuScene);
 
     //menu scene
-
-    //create play button and add button press event
-    let playButton = new ButtonElement(menuScene, "images/playButton2.png", WIDTH / 2, HEIGHT - HEIGHT / 8, 1);
-    playButton.isClickable(true);
-    playButton.clicked(function ()
-    {
-        console.log("PlayButtonClicked");
-        state = play;
-        gameScene.visible = true;
-        menuScene.visible = false;
-     });
-
-     let characterSelectButton = new ButtonElement(menuScene, "images/playButton2.png", WIDTH / 2, HEIGHT - HEIGHT / 3.5, .6);
-     characterSelectButton.isClickable(true);
-     characterSelectButton.clicked(function ()
-     {
-         console.log("CharButtonClicked");
-         state = characterSelection;
-         characterSelectScene.visible = true;
-         menuScene.visible = false;
-      });
-
-    let logo = new ButtonElement(menuScene, "images/Logo.png", WIDTH / 2, HEIGHT / 3);
-    logo.scale.set(0.9);
-    // let muteButton = new SpriteElement(menuScene, "images/muteButton.png", WIDTH / 4, HEIGHT - HEIGHT + 29);
+    mainMenuClass = new MainMenu();
+    mainMenuClass.setup();
     //end menu scene
 
 
@@ -99,36 +78,39 @@ function setup()
     app.stage.addChild(gameScene);
     gameScene.visible = false;
 
-    //create player and setup keyboard control
-    player = new Player(gameScene, "images/player.png", 1, WIDTH / 1.9, HEIGHT / 4);
-    player.scale.set(0.6);
+    inGameClass = new InGame();
+    inGameClass.setup();
+
+    // //create player and setup keyboard control
+    // player = new Player(gameScene, "images/player.png", 1, WIDTH / 1.9, HEIGHT / 4);
+    // player.scale.set(0.6);
     let spacebar = keyboard(32);
     spacebar.release =  function()
     {
-        player.changeDirection();
+        inGameClass._player.changeDirection();
     }
 
-    for(var i = 0; i < 20; i++)
-    {
-        let tree = new Tree(gameScene, "images/tree2.png", 3);
-        tree.scale.set(0.7);
-        trees.push(tree);
-    }
-
-    //add in game ui
-    // let pauseButton = new ButtonElement(gameScene, "images/pauseButton.png", WIDTH / 7, HEIGHT / 12, 1);
-    // pauseButton.isClickable(true);
-    // pauseButton.clicked(function ()
+    // for(var i = 0; i < 20; i++)
     // {
-    //     console.log("PauseButtonClicked");
-    //  });
+    //     let tree = new Tree(gameScene, "images/tree2.png", 3);
+    //     tree.scale.set(0.7);
+    //     trees.push(tree);
+    // }
 
-    // create score text
-    scoreText = new PIXI.Text('0', style5);
-    //scoreText.position.set( WIDTH - WIDTH / 6, HEIGHT / 21);
-    scoreText.anchor.set(0.5);
-    scoreText.position.set(WIDTH / 2, HEIGHT / 13);
-    gameScene.addChild(scoreText);
+    // //add in game ui
+    // // let pauseButton = new ButtonElement(gameScene, "images/pauseButton.png", WIDTH / 7, HEIGHT / 12, 1);
+    // // pauseButton.isClickable(true);
+    // // pauseButton.clicked(function ()
+    // // {
+    // //     console.log("PauseButtonClicked");
+    // //  });
+
+    // // create score text
+    // scoreText = new PIXI.Text('0', style5);
+    // //scoreText.position.set( WIDTH - WIDTH / 6, HEIGHT / 21);
+    // scoreText.anchor.set(0.5);
+    // scoreText.position.set(WIDTH / 2, HEIGHT / 13);
+    // gameScene.addChild(scoreText);
 
     //end game scene
 
@@ -194,53 +176,10 @@ function setup()
     app.stage.addChild(characterSelectScene);
     characterSelectScene.visible = false;
 
-    let characterText = new PIXI.Text('Select\nCharacter', style2);
-    characterText.position.set( WIDTH / 2, HEIGHT / 8);
-    characterText.anchor.set(0.5);
-    characterSelectScene.addChild(characterText);
+    let textures = ["images/player.png", "images/player2.png"];
+    characterSelectionClass = new CharacterSelection(textures);
+    characterSelectionClass.setup();
 
-    characterSelectionSprite = new PIXI.Sprite(loader.resources["images/player.png"].texture);
-    characterSelectionSprite.scale.set(5);
-    characterSelectionSprite.position.set(WIDTH / 2 + 30, HEIGHT / 2);
-    characterSelectionSprite.anchor.set(0.5);
-    characterSelectScene.addChild(characterSelectionSprite);
-
-    let selectCharacter = new ButtonElement(characterSelectScene, "images/menuButton.png", WIDTH / 2, HEIGHT - HEIGHT / 8, 1);
-    selectCharacter.isClickable(true);
-    selectCharacter.clicked(function()
-    {
-        //set the texture for the character
-        player.setTexture(characterSelectionSprite.texture);// updateTexture(playerTextureIndex);
-        state = menu;
-        characterSelectScene.visible = false;
-        menuScene.visible = true;
-    });
-
-    let characterSelectLeft = new ButtonElement(characterSelectScene, "images/menuButton.png", WIDTH / 4, HEIGHT - HEIGHT / 8, .7);
-    characterSelectLeft.isClickable(true);
-    characterSelectLeft.clicked(function()
-    {
-        //update textureIndex
-        playerTextureIndex--;
-        if(playerTextureIndex < 0)
-            playerTextureIndex = 0;
-
-        //updateSpriteDisplayed
-        characterSelectionSprite.setTexture(PIXI.Texture.fromImage(player.textures[playerTextureIndex]));
-    });
-
-    let characterSelectRight = new ButtonElement(characterSelectScene, "images/menuButton.png", WIDTH - WIDTH / 4, HEIGHT - HEIGHT / 8, .7);
-    characterSelectRight.isClickable(true);
-    characterSelectRight.clicked(function()
-    {
-        //update textureIndex
-        playerTextureIndex++;
-        if(playerTextureIndex > player.textures.length - 1)
-            playerTextureIndex = player.textures.length - 1;
-
-        //updateSpriteDisplayed
-        characterSelectionSprite.setTexture(PIXI.Texture.fromImage(player.textures[playerTextureIndex]));
-    });
 
     //Set the game state
     state = menu;
@@ -257,30 +196,31 @@ function gameLoop(delta)
 
 function play(delta)
 {
+    inGameClass.update(delta);
     //in game logic
-    player.update(delta);
+    //player.update(delta);
 
-    if(player.checkOutOfBounds())
-    {
-        gameScene.visible = false;
-        gameOverScene.visible = true;
-        state = end;
-    }
+    // if(player.checkOutOfBounds())
+    // {
+    //     gameScene.visible = false;
+    //     gameOverScene.visible = true;
+    //     state = end;
+    // }
 
-    for (var i = 0; i < trees.length; i++)
-    {
-        trees[i].update();
-        if(hitTestRectangle(player, trees[i]))
-        {
-            console.log("Hit Something");
-            gameScene.visible = false;
-            gameOverScene.visible = true;
-            state = end;
-        }
-    }
+    // for (var i = 0; i < trees.length; i++)
+    // {
+    //     trees[i].update();
+    //     if(hitTestRectangle(player, trees[i]))
+    //     {
+    //         console.log("Hit Something");
+    //         gameScene.visible = false;
+    //         gameOverScene.visible = true;
+    //         state = end;
+    //     }
+    // }
 
     //update score
-    scoreText.text = player.score;
+    //scoreText.text = player.score;
 }
 
 function menu(delta)
